@@ -473,7 +473,7 @@ class Bomb(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         sprite_sheet = SpriteSheet("Untitled.png")
-        self.image = sprite_sheet.get_image(2, 2, 48, 48, WHITE)
+        self.image = sprite_sheet.get_image(0, 0, 41, 57, WHITE)
         self.rect = self.image.get_rect()
 
     def move(self):
@@ -498,30 +498,30 @@ class Soldier(pygame.sprite.Sprite):
         self.walking_frames_l = []
         self.walking_frames_r = []
 
-        sprite_sheet = SpriteSheet("touse.png")
-        self.image = sprite_sheet.get_image(0, 0, 150, 205, BLACK)
+        sprite_sheet = SpriteSheet("characters.png")
+        self.image = sprite_sheet.get_image(0, 5, 111, 123, BLACK)
         self.walking_frames_l.append(self.image)
 
-        self.image = sprite_sheet.get_image(233, 0, 140, 210, BLACK)
+        self.image = sprite_sheet.get_image(120, 5, 111, 123, BLACK)
         self.walking_frames_l.append(self.image)
-        self.image = sprite_sheet.get_image(425, 5, 123, 210, BLACK)
+        self.image = sprite_sheet.get_image(230, 5, 111, 123, BLACK)
         self.walking_frames_l.append(self.image)
 
-        self.image = sprite_sheet.get_image(0, 0, 150, 205, BLACK)
+        self.image = sprite_sheet.get_image(0, 5, 111, 123, BLACK)
         self.image = pygame.transform.flip(self.image, True, False)
         self.walking_frames_r.append(self.image)
-        self.image = sprite_sheet.get_image(233, 0, 140, 210, BLACK)
+        self.image = sprite_sheet.get_image(120, 5, 111, 123, BLACK)
         self.image = pygame.transform.flip(self.image, True, False)
         self.walking_frames_r.append(self.image)
-        self.image = sprite_sheet.get_image(425, 5, 123, 210, BLACK)
+        self.image = sprite_sheet.get_image(230, 5, 111, 123, BLACK)
         self.image = pygame.transform.flip(self.image, True, False)
         self.walking_frames_r.append(self.image)
 
         self.image = self.walking_frames_r[0]
 
         self.rect = self.image.get_rect()
-        self.rect.y = 297
-        self.rect.x = 100
+        self.rect.y = 497
+        self.rect.x = 348
         self.frame = 0
         self.moved = 0
 
@@ -567,7 +567,7 @@ class Bullet(pygame.sprite.Sprite):
         self.change_y = 0
         self.direction = ""
         sprite_sheet = SpriteSheet("Bullet_2.png")
-        self.image = sprite_sheet.get_image(0, 0, 27, 27, BLACK)
+        self.image = sprite_sheet.get_image(0, 0, 20, 66, BLACK)
         self.image = pygame.transform.rotate(self.image, 45)
         self.rect = self.image.get_rect()
         self.rect.y = 0
@@ -1216,7 +1216,8 @@ def main2():
         play = pygame.image.load("Play.png")
         icon = pygame.image.load("Icon.png")
         pygame.display.set_icon(icon)
-        bg = pygame.image.load("3601933.jpg")
+        bg = pygame.image.load("abc.png")
+        screen.blit(bg, [0, 0])
         lives = 3
         score = 0
         fontwar = pygame.font.Font("MISTRAL.ttf", 30)
@@ -1238,7 +1239,7 @@ def main2():
         pygame.mixer.music.load("War Song.mp3")
         pygame.mixer.music.play()
         var2 = False
-    screen.blit(bg, [0, 0])
+    
     soldier.rect.clamp_ip(screen_rect)
     screen.blit(bg, [0, 0])
     all_sprites.draw(screen)
