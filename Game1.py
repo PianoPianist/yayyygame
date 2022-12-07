@@ -463,19 +463,8 @@ class Level_05(Level):
             self.platform_list.add(block)
 
 var = True
-
+var2 = True
 #WARRIOR GAME
-
-class SpriteSheet(object):
-    def __init__(self, file_name):
-        self.sprite_sheet = pygame.image.load(file_name).convert()
-
-    def get_image(self, x, y, width, height, colour):
-        image = pygame.Surface([width, height]).convert()
-        image.set_colorkey(colour)
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        return image
-
 
 class Bomb(pygame.sprite.Sprite):
     change_x = 0
@@ -509,7 +498,7 @@ class Soldier(pygame.sprite.Sprite):
         self.walking_frames_l = []
         self.walking_frames_r = []
 
-        sprite_sheet = SpriteSheet("Turtle.png")
+        sprite_sheet = SpriteSheet("touse.png")
         self.image = sprite_sheet.get_image(0, 0, 150, 205, BLACK)
         self.walking_frames_l.append(self.image)
 
@@ -601,7 +590,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-class Lives(pygame.sprite.Sprite):
+class Liveswar(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         sprite_sheet = SpriteSheet("Heart_icon.png")
@@ -619,9 +608,9 @@ def show_bomb():
 
 bomb = Bomb()
 soldier = Soldier()
-heart = Lives()
-heart1 = Lives()
-heart2 = Lives()
+heart = Liveswar()
+heart1 = Liveswar()
+heart2 = Liveswar()
 
 heart.rect.x = 60
 heart1.rect.x = 90
@@ -653,9 +642,9 @@ pygame.display.set_icon(icon)
 bg = pygame.image.load("3601933.jpg")
 lives = 3
 score = 0
-font = pygame.font.Font("MISTRAL.ttf", 30)
-font2 = pygame.font.Font("MISTRAL.ttf", 100)
-heart = Lives()
+fontwar = pygame.font.Font("MISTRAL.ttf", 30)
+fontwar2 = pygame.font.Font("MISTRAL.ttf", 100)
+heart = Liveswar()
 lives2 = pygame.mixer.Sound("2 lives.mp3")
 life1 = pygame.mixer.Sound("1 life.mp3")
 lost = pygame.mixer.Sound('lost.mp3')
@@ -671,6 +660,7 @@ bulletsound = pygame.mixer.Sound("rumble.flac")
 argh = pygame.mixer.Sound("1.mp3")
 pygame.mixer.music.load("War Song.mp3")
 pygame.mixer.music.play()
+
 #screen.blit(playbg, [0, 0])
 #screen.blit(play, [403, 225])
 # Loop until the user clicks the close button.
@@ -766,7 +756,7 @@ def main():
         level_list.append(Level_04(skeleton, player) )
         level_list.append(Level_05(skeleton, player) )
         #level_list.append(Level_06(skeleton, player) )
-        current_level_no = 4
+        current_level_no = 0
         current_level = level_list[current_level_no]
         
         lvl_2 = pygame.transform.scale(lvl_2, [1000, 500])
@@ -1149,7 +1139,7 @@ def main():
         if once == "one":
             once = "zero"
             timeone = time_taken
-            finaltime = font2.render(str(timeone), True, FONCOL)
+            finaltime = font2.render(str(timeone), True, RED)
             with open("Time.txt", "a+") as doc:
                 doc.seek(0)
                 times = doc.readlines()
@@ -1162,12 +1152,171 @@ def main():
                         doc.write(str(time_taken))
                         doc.close()
                         prevhigh2 = time_taken
-        lastbest = font2.render(str(prevhigh2), True, FONCOL)
+        lastbest = font2.render(str(prevhigh2), True, RED)
         screen.blit (lastbest, [550, 296])
         screen.blit(finaltime, [550, 202])
         if yesblit == "yes":
             yesblit == "no"
-            screen.blit(high, [183, 415])
+            #screen.blit(high, [183, 415])
+def main2():
+    global var2
+    global bg
+    global soldier
+    global screen_rect
+    global all_sprites
+    global bomb
+    global bomb_list
+    global bullet_list
+    global fontwar
+    global fontwar2
+    global score
+    global prevhigh
+    global lives
+    global yesblit 
+    global bulletsound
+    global heart2
+    global argh
+    global lives2
+    global heart1
+    global life1
+    global heart
+    global lost
+    global writeonce 
+    if var2:
+        bomb = Bomb()
+        soldier = Soldier()
+        heart = Liveswar()
+        heart1 = Liveswar()
+        heart2 = Liveswar()
+
+        heart.rect.x = 60
+        heart1.rect.x = 90
+        heart2.rect.x = 120
+
+        all_sprites = pygame.sprite.Group()
+        bullet_list = pygame.sprite.Group()
+        bomb_list = pygame.sprite.Group()
+        heart_list = pygame.sprite.Group()
+
+        all_sprites.add(soldier)
+        bomb_list.add(bomb)
+        all_sprites.add(bomb)
+
+        all_sprites.add(heart)
+        heart_list.add(heart)
+
+        all_sprites.add(heart1)
+        heart_list.add(heart1)
+
+        all_sprites.add(heart2)
+        heart_list.add(heart2)
+
+        screen_rect = screen.get_rect()
+        pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+        play = pygame.image.load("Play.png")
+        icon = pygame.image.load("Icon.png")
+        pygame.display.set_icon(icon)
+        bg = pygame.image.load("3601933.jpg")
+        lives = 3
+        score = 0
+        fontwar = pygame.font.Font("MISTRAL.ttf", 30)
+        fontwar2 = pygame.font.Font("MISTRAL.ttf", 100)
+        heart = Liveswar()
+        lives2 = pygame.mixer.Sound("2 lives.mp3")
+        life1 = pygame.mixer.Sound("1 life.mp3")
+        lost = pygame.mixer.Sound('lost.mp3')
+        click = pygame.mixer.Sound("click.wav")
+        speak = ""
+        yesblit = ""
+        writeonce = "one"
+        prevhigh = 0
+        start = True
+        #playbg = pygame.image.load("Start.png")
+        #playbg = pygame.transform.scale(playbg, [1000, 500])
+        bulletsound = pygame.mixer.Sound("rumble.flac")
+        argh = pygame.mixer.Sound("1.mp3")
+        pygame.mixer.music.load("War Song.mp3")
+        pygame.mixer.music.play()
+        var2 = False
+    screen.blit(bg, [0, 0])
+    soldier.rect.clamp_ip(screen_rect)
+    screen.blit(bg, [0, 0])
+    all_sprites.draw(screen)
+    soldier.move()
+    soldier.walk()
+
+    if bomb.rect.y > 100:
+        show_bomb()
+    for bullet in bullet_list:
+        if bullet.direction == "R":
+            bullet.moveright()
+        else:
+            bullet.moveleft()
+    for bomb in bomb_list:
+        bomb.move()
+    if pygame.sprite.groupcollide(bomb_list, bullet_list, True, True):
+        score += 1
+        bulletsound.play()
+    score_print = fontwar.render("Score: " + str(score), True, BLACK)
+    lives_print = fontwar.render("Lives: ", True, BLACK)
+    game_over = fontwar2.render("Game Over!", True, BLACK)
+    final_score = fontwar2.render("Your score was " + str(score) + ".", True, BLACK)
+    high_score = fontwar2.render("You got a high score!!", True, BLACK)
+    last_high = fontwar2.render("Your last high score was " + str(prevhigh) + ".", True, BLACK)
+    screen.blit(score_print, [10, 10])
+    screen.blit(lives_print, [10, 40])
+    soldier_hit_list = pygame.sprite.spritecollide(soldier, bomb_list, True)
+
+    if len(bomb_list) == 0:
+        show_bomb()
+
+    for bomb in soldier_hit_list:
+        bomb.kill()
+        lives -= 1
+        if lives == 2:
+            heart2.kill()
+            argh.play()
+            lives2.play()
+        if lives == 1:
+            heart1.kill()
+            argh.play()
+            life1.play()
+        if lives == 0:
+            heart.kill()
+            argh.play()
+            lost.play()
+            finalscore = str(score)
+    if lives == 0:
+        screen.blit(bg, [0, 0])
+        screen.blit(game_over, [275, 100])
+        screen.blit(final_score, [200, 200])
+        if writeonce == "one":
+            writeonce = "no"
+            with open("Scores.txt", "a+") as doc:
+                doc.seek(0)
+                scores = doc.readlines()
+                for i in scores:
+                    i = int(i)
+                    prevhigh = i
+                    if score > i:
+                        yesblit = "yes"
+                        doc.truncate(0)
+                        doc.write(finalscore)
+                        doc.close()
+                    else:
+                        yesblit = "no"
+        for bomb in soldier_hit_list:
+            bomb.kill()
+        soldier.kill()
+        for bomb in bomb_list:
+            bomb.kill()
+        for bullet in bullet_list:
+            bullet.kill()
+    if yesblit == "yes":
+        screen.blit(high_score, [150, 315])
+    elif yesblit == "no":
+        screen.blit(last_high, [30, 315])
+
 while not done:
     
     for event in pygame.event.get():
@@ -1183,10 +1332,37 @@ while not done:
             elif two.collidepoint(event.pos):
                 game_num = 1
                 decided = True
+                #screen.blit(playbg, [0, 0])
+                #screen.blit(play, [403, 225])
             elif three.collidepoint(event.pos):
                 game_num = 2
                 decided = True
-            
+        if event.type == pygame.KEYDOWN:
+            if game_num == 1:
+                if event.key == pygame.K_LEFT:
+                    soldier.go_left()
+                if event.key == pygame.K_RIGHT:
+                    soldier.go_right()
+                if event.key == pygame.K_SPACE:
+                    bullet = Bullet()
+                    if soldier.direction == "R":
+                        bullet.direction = "R"
+                        bullet.rect.x = soldier.rect.left - 23
+                        bullet.rect.y = soldier.rect.top - 23
+                    else:
+                        bullet.image = pygame.transform.flip(bullet.image, True, False)
+                        bullet.rect.x = soldier.rect.left + 110
+                        bullet.rect.y = soldier.rect.top - 24
+                        bullet.direction = "L"
+                    all_sprites.add(bullet)
+                    bullet_list.add(bullet)
+        if event.type == pygame.KEYUP:
+            if game_num == 1:
+                if event.key == pygame.K_LEFT and soldier.change_x < 0:
+                    soldier.stop()
+                if event.key == pygame.K_RIGHT and soldier.change_x > 0:
+                    soldier.stop()
+    
     if not decided:
         screen.blit(mainscr, [0, 0, ])
         
@@ -1195,6 +1371,8 @@ while not done:
     if game_num == 0:
         
         main()
+    #elif game_num == 1:
+    #    main2()
       #  hell = font2.render("hi main screen", True, BLACK)
        # screen.blit(hell, [400, 100])
 
@@ -1205,8 +1383,9 @@ while not done:
     #if game_num == 0:
         
         #main()
-   
-    
+    if game_num == 1:
+        main2()
+        
     clock.tick(60)
 
     # Go ahead and update the screen with what we've drawn.
