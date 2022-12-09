@@ -16,6 +16,9 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 500
 CYAN = (81, 223, 210)
 FONCOL = (36, 255, 0)
+LIME = (0, 255, 21)
+
+
 
 # Set the height and width of the screen
 size = (1000, 500)
@@ -233,6 +236,7 @@ class Lives(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 60
+
 
 class Portal(pygame.sprite.Sprite):
     def __init__(self):
@@ -462,8 +466,15 @@ class Level_05(Level):
             block.player = self.player
             self.platform_list.add(block)
 
+
+
 var = True
 var2 = True
+var3 = True
+home = pygame.image.load("home.png")
+home = pygame.transform.scale(home, [64, 64])
+homesq = pygame.draw.rect(screen, GREEN, [925, 13, 62, 66])
+
 #WARRIOR GAME
 
 class Bomb(pygame.sprite.Sprite):
@@ -566,7 +577,7 @@ class Bullet(pygame.sprite.Sprite):
         self.change_x = 0
         self.change_y = 0
         self.direction = ""
-        sprite_sheet = SpriteSheet("Bullet_2.png")
+        sprite_sheet = SpriteSheet("bullet.png")
         self.image = sprite_sheet.get_image(0, 0, 20, 66, BLACK)
         self.image = pygame.transform.rotate(self.image, 45)
         self.rect = self.image.get_rect()
@@ -636,7 +647,7 @@ heart_list.add(heart2)
 
 screen_rect = screen.get_rect()
 pygame.mouse.set_cursor(*pygame.cursors.broken_x)
-play = pygame.image.load("Play.png")
+
 icon = pygame.image.load("Icon.png")
 pygame.display.set_icon(icon)
 bg = pygame.image.load("3601933.jpg")
@@ -654,12 +665,12 @@ yesblit = ""
 writeonce = "one"
 prevhigh = 0
 start = True
+visible = True
 #playbg = pygame.image.load("Start.png")
 #playbg = pygame.transform.scale(playbg, [1000, 500])
 bulletsound = pygame.mixer.Sound("rumble.flac")
 argh = pygame.mixer.Sound("1.mp3")
-pygame.mixer.music.load("War Song.mp3")
-pygame.mixer.music.play()
+
 
 #screen.blit(playbg, [0, 0])
 #screen.blit(play, [403, 225])
@@ -670,7 +681,7 @@ done = False
 #button3 = pygame.draw.rect(screen, GREEN, [800, 400, 100, 75])
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
-game_num = -2
+game_num = -1
 #pygame.init()
 decided = False
 mainscr = pygame.image.load("mainscreen.png")
@@ -679,6 +690,57 @@ one= pygame.draw.rect(screen, GREEN, [330, 350, 90, 90])
 two = pygame.draw.rect(screen, GREEN, [480, 350, 90, 90])
 three= pygame.draw.rect(screen, GREEN, [630, 350, 90, 90])
 
+#GOONJ
+screen_width = 1000
+screen_height = 500
+screen = pygame.display.set_mode([screen_width, screen_height])
+# pygame.display.set_caption("Uncover the Mystery (Enigma)")
+#clock = pygame.time.Clock()
+message_end_time = 0
+#  done = False
+write = False
+yes = True
+once = 8
+an = 8
+aj = 8
+aa = 8
+p = 8
+lasthi = 0
+prevhigh = "ok"
+cant_click = []
+scorego = 0
+first = pygame.image.load("1st.png").convert()
+second = pygame.image.load("2nd.png").convert()
+third = pygame.image.load("3rd.png").convert()
+
+
+won = pygame.image.load("you_win.png").convert()
+won = pygame.transform.scale(won, [1000, 500])
+lost = pygame.image.load("lost.png").convert()
+lost = pygame.transform.scale(lost, [1000, 500])
+
+currentlevelno = 1
+paper1 = pygame.draw.ellipse (screen, LIME, [358, 353,40, 25], 3)
+paper2 = pygame.draw.ellipse (screen, LIME, [522, 384, 27, 25], 3)
+paper3 = pygame.draw.ellipse (screen, LIME, [580, 314, 38, 25], 3)
+
+cup1 = pygame.draw.ellipse (screen, LIME, [189, 313,32, 27], 3)
+cup2 = pygame.draw.ellipse (screen, LIME, [509, 400, 76, 50], 3)
+cup3 = pygame.draw.ellipse (screen, LIME, [483, 346, 33, 22], 3)
+
+met1 = pygame.draw.ellipse (screen, LIME, [519, 341, 16, 13], 3)
+met2 = pygame.draw.ellipse (screen, LIME, [700, 354, 33, 19], 3)
+
+fontgo = pygame.font.Font("GOUDYSTO.TTF", 30)
+font2go = pygame.font.Font("MISTRAL.TTF", 25)
+active = True
+seconds = 0
+finalmin = 0
+finalsec = 0
+var3 = False
+
+micro = pygame.image.load("microomg.png").convert()
+micro = pygame.transform.scale(micro, [64, 64])
 def main():
     global var
     global startyt
@@ -703,7 +765,7 @@ def main():
     global lvl_5 
     #global lvl_6 
     global win 
-    
+    global decided
     global yes
     global once 
     global yesblit
@@ -723,11 +785,15 @@ def main():
     global lastbest
     global prevhigh2
     global finaltime
+    global visible
+    global noblit
+    global game_num
+    global micro
     if var:
-        
+        noblit = True
         #print("yes")
         font = pygame.font.Font("COOPBL.TTF", 30)
-        font2 = pygame.font.Font("COOPBL.TTF", 50)
+        font2 = pygame.font.Font("COOPBL.TTF", 45)
         icon = pygame.image.load("icon.png")
         lvl_2 = pygame.image.load("lvl_2.png")
         lvl_1 = pygame.image.load("lvl_1.png")
@@ -839,7 +905,13 @@ def main():
             player.stop()
         if event.key == pygame.K_RIGHT and player.change_x > 0:
             player.stop()
-    
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        if homesq.collidepoint(event.pos):
+            screen.blit(mainscr, [0, 0, ])
+            visible = True
+            game_num = -1
+            noblit = False
+            
     screen.fill(CYAN)
     if current_level_no == 0:
         screen.blit(lvl_1, [0, 0])
@@ -848,6 +920,7 @@ def main():
       #  portal = Portal()
 
         screen.blit(lvl_2, [0, 0])
+        screen.blit(micro, [865, 408])
         portal.rect.x = 575
         portal.rect.y = 320
         if yes == "yes":
@@ -879,7 +952,7 @@ def main():
        
         
         screen.blit(lvl_4, [0, 0])
-        
+        screen.blit(micro, [743, 387])
         if yes == "yes":
             player.rect.y = 214
             player.rect.x = 99
@@ -895,10 +968,11 @@ def main():
     if current_level_no == 4:
        # portal = Portal()
         screen.blit(lvl_5, [0, 0])
+        screen.blit(micro, [777, 334])
 #        portal.rect.x = 519
  #       portal.rect.y = 300
         if yes == "yes":
-            player.rect.y = 220
+            player.rect.y = 198
             player.rect.x = 516
             skeleton.rect.y = 171
             skeleton.rect.x = 158
@@ -980,7 +1054,8 @@ def main():
                 yes = "yes"
             else:
                 current_level_no = 7
-                screen.blit(win, [0, 0])
+                if noblit:
+                    screen.blit(win, [0, 0])
                 for i in active_sprite_list:
                     i.kill()
                     
@@ -1157,6 +1232,10 @@ def main():
         screen.blit(finaltime, [550, 202])
         if yesblit == "yes":
             yesblit == "no"
+        if current_level_no == 7:
+            screen.blit(home, [925, 15])
+            
+            
             #screen.blit(high, [183, 415])
 def main2():
     global var2
@@ -1181,7 +1260,9 @@ def main2():
     global life1
     global heart
     global lost
-    global writeonce 
+    global writeonce
+    global gameover
+    global highscr
     if var2:
         bomb = Bomb()
         soldier = Soldier()
@@ -1213,7 +1294,6 @@ def main2():
 
         screen_rect = screen.get_rect()
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
-        play = pygame.image.load("Play.png")
         icon = pygame.image.load("Icon.png")
         pygame.display.set_icon(icon)
         bg = pygame.image.load("abc.png")
@@ -1221,12 +1301,15 @@ def main2():
         lives = 3
         score = 0
         fontwar = pygame.font.Font("MISTRAL.ttf", 30)
-        fontwar2 = pygame.font.Font("MISTRAL.ttf", 100)
+        fontwar2 = pygame.font.Font("MISTRAL.ttf", 50)
         heart = Liveswar()
         lives2 = pygame.mixer.Sound("2 lives.mp3")
         life1 = pygame.mixer.Sound("1 life.mp3")
         lost = pygame.mixer.Sound('lost.mp3')
         click = pygame.mixer.Sound("click.wav")
+        highscr = pygame.image.load("highscore.png")
+        gameover = pygame.image.load("nohighscore.png")
+
         speak = ""
         yesblit = ""
         writeonce = "one"
@@ -1236,8 +1319,7 @@ def main2():
         #playbg = pygame.transform.scale(playbg, [1000, 500])
         bulletsound = pygame.mixer.Sound("rumble.flac")
         argh = pygame.mixer.Sound("1.mp3")
-        pygame.mixer.music.load("War Song.mp3")
-        pygame.mixer.music.play()
+    
         var2 = False
     
     soldier.rect.clamp_ip(screen_rect)
@@ -1261,9 +1343,9 @@ def main2():
     score_print = fontwar.render("Score: " + str(score), True, BLACK)
     lives_print = fontwar.render("Lives: ", True, BLACK)
     game_over = fontwar2.render("Game Over!", True, BLACK)
-    final_score = fontwar2.render("Your score was " + str(score) + ".", True, BLACK)
+    final_score = fontwar2.render(str(score) ,True, FONCOL)
     high_score = fontwar2.render("You got a high score!!", True, BLACK)
-    last_high = fontwar2.render("Your last high score was " + str(prevhigh) + ".", True, BLACK)
+    last_high = fontwar2.render( str(prevhigh), True, FONCOL)
     screen.blit(score_print, [10, 10])
     screen.blit(lives_print, [10, 40])
     soldier_hit_list = pygame.sprite.spritecollide(soldier, bomb_list, True)
@@ -1314,10 +1396,227 @@ def main2():
         for bullet in bullet_list:
             bullet.kill()
     if yesblit == "yes":
-        screen.blit(high_score, [150, 315])
-    elif yesblit == "no":
-        screen.blit(last_high, [30, 315])
+        screen.blit(highscr, [0,0])
+        screen.blit(home, [925, 15])
 
+        screen.blit(final_score, [580, 290])
+        screen.blit(final_score, [573, 358])
+    elif yesblit == "no":
+        
+        screen.blit(gameover, [0, 0])
+        screen.blit(home, [925, 15])
+
+        screen.blit(final_score, [580, 290])
+        screen.blit(last_high, [580, 358])
+
+def main3():
+    global var3
+    global active
+    global currentlevelno
+    global fontgo
+    global font2go
+    global scorego
+    global yes
+    global paper1
+    global paper2 
+    global paper3
+    global screen
+    global cant_click
+    global first
+    global an
+    global once
+    global aj
+    global aa
+    global p
+    global finalbl
+    global finalsec
+    global finalmin 
+    global lasthi
+    global prevhigh
+    global current_time
+    global message_end_time
+    global second
+    global third
+    global won
+    global write
+    global house
+    if var3:
+        screen_width = 1000
+        screen_height = 500
+        screen = pygame.display.set_mode([screen_width, screen_height])
+       # pygame.display.set_caption("Uncover the Mystery (Enigma)")
+        clock = pygame.time.Clock()
+        message_end_time = 0
+      #  done = False
+        write = False
+        yes = True
+        once = 8
+        an = 8
+        aj = 8
+        aa = 8
+        p = 8
+        lasthi = 0
+        prevhigh = "ok"
+        cant_click = []
+        scorego = 0
+        first = pygame.image.load("1st.png").convert()
+        second = pygame.image.load("2nd.png").convert()
+        third = pygame.image.load("3rd.png").convert()
+        won = pygame.image.load("you_win.png").convert()
+        won = pygame.transform.scale(won, [1000, 500])
+        lost = pygame.image.load("lost.png").convert()
+        lost = pygame.transform.scale(lost, [1000, 500])
+
+        currentlevelno = 1
+        paper1 = pygame.draw.ellipse (screen, BLACK, [368, 351, 34, 28], 3)
+        paper2 = pygame.draw.ellipse (screen, BLACK, [522, 384, 27, 25], 3)
+        paper3 = pygame.draw.ellipse (screen, BLACK, [580, 314, 38, 25], 3)
+       
+        fontgo = pygame.font.Font("GOUDYSTO.TTF", 30)
+        font2go = pygame.font.Font("MISTRAL.TTF", 25)
+        active = True
+        seconds = 0
+        finalmin = 0
+        finalsec = 0
+        var3 = False
+
+    current_time = pygame.time.get_ticks()
+    seconds = (300000-current_time)//1000
+    minutes = (seconds)//60
+    seconds = seconds - (minutes * 60)
+    secstr = str(seconds)
+    if len(secstr) == 1:
+        secstr = secstr[:0] + "0" + secstr[0:]
+    finish = fontgo.render("Level completed!", True, BLUE)
+    scorebl = font2go.render ("Score: " + str(scorego), True, RED)
+    minbl = font2go.render (str(minutes) + ":", True, RED)
+    sec = font2go.render (str(secstr), True, RED)
+    
+    
+    
+    if an == 9:
+        active = False
+        message_end_time = pygame.time.get_ticks() + 1500
+        currentlevelno = 2
+    if once == 9:
+        active = False
+        message_end_time = pygame.time.get_ticks() + 1500
+        currentlevelno = 3
+    if aj == 9:
+        active = False
+        message_end_time = pygame.time.get_ticks() + 1500
+        currentlevelno = 4
+    if aa == 9:
+        active = False
+        message_end_time = pygame.time.get_ticks() + 1500
+        currentlevelno = 5
+    if p == 9:
+        p +=1
+        final_time = current_time
+        finalsec = current_time//1000
+        finalmin = (finalsec)//60
+        finalsec = str(finalsec - (finalmin * 60))
+        if len(finalsec) == 1:
+            finalsec = finalsec[:0] + "0" + finalsec[0:]
+        write = True
+
+    if scorego == 3:
+        an +=1
+        if current_time < message_end_time:
+            pygame.draw.rect(screen, GREY, [246, 159, 553, 47])
+            screen.blit (finish, [250, 165])
+        else:
+            yes = True
+            active = True
+    if scorego == 6:
+        once +=1
+        if current_time < message_end_time:
+            pygame.draw.rect(screen, GREY, [246, 159, 553, 47])
+            screen.blit (finish, [250, 165])
+        else:
+            yes = True
+            active = True
+    if scorego == 8:
+        aj +=1
+        if current_time < message_end_time:
+            pygame.draw.rect(screen, GREY, [246, 159, 553, 47])
+            screen.blit (finish, [250, 165])
+        else:
+            yes = True
+            active = True
+    if scorego == 23:
+        aa +=1
+        if current_time < message_end_time:
+            pygame.draw.rect(screen, GREY, [246, 159, 553, 47])
+            screen.blit (finish, [250, 165])
+        else:
+            yes = True
+            active = True
+    finalbl = fontgo.render(str(finalsec), True, BLACK)
+    finalbl2 = fontgo.render(str(finalmin) + ":", True, BLACK)
+    high = fontgo.render ("You got a new best time!!", True, RED)
+    
+    if currentlevelno ==1:
+        if yes == True:
+            yes = False
+            screen.blit(first, [0, 0])
+            print("fir")
+    if currentlevelno == 2:
+        if yes == True:
+            yes = False
+            screen.blit(second, [0, 0])
+    if currentlevelno == 3 and yes == True:
+            yes = False
+            screen.blit(third, [0, 0])
+    
+    
+    if scorego < 8 and current_time < 300000:
+        pygame.draw.rect(screen, LIME, [0, 0, 97, 60])
+        screen.blit(scorebl, [10, 10])
+        screen.blit(minbl, [10, 30])
+        screen.blit(sec, [25, 30])
+    if scorego == 8:
+        p+=1
+        
+        screen.blit(won, [0, 0])
+        screen.blit(home, [925, 15])
+        screen.blit(finalbl2, [545, 222])
+        screen.blit(finalbl, [585, 222])
+        house = True
+        if write == True:
+            write = False
+            with open("TimeGoon.txt", "a+") as doc:
+                doc.seek(0)
+                times = doc.readlines()
+                for i in times:
+                    i = float(i)
+                    if final_time < i:
+                        doc.truncate(0)
+                        doc.write(str(final_time))
+                        doc.close()
+                        prevhigh = "yes"
+                    else:
+                        lasthi = i
+    if score < 8 and current_time > 300000:
+        
+        screen.blit(lost, [0, 0])
+        screen.blit(home, [925, 15])
+        house = True
+        currentlevelno +=1
+    if lasthi != 0:
+        lastsec = int(lasthi//1000)
+        lastmin = int((lastsec)//60)
+        lastsec = str(lastsec - (lastmin * 60))
+       # print(lastmin, lastsec)
+        lastbl = fontgo.render(str(lastmin) + ":", True, BLACK)
+        lastbl2 = fontgo.render(str(lastsec), True, BLACK)
+        screen.blit(lastbl, [545, 316])
+        screen.blit(lastbl2, [585, 316])
+    if prevhigh == "yes":
+        screen.blit(finalbl2, [545, 316])
+        #screen.blit(finalbl, [585, 316])    
+        #screen.blit(high, [55, 227])
+        
 while not done:
     
     for event in pygame.event.get():
@@ -1326,18 +1625,96 @@ while not done:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             print(event.pos)
-            if one.collidepoint(event.pos):
-                startyt = pygame.time.get_ticks()
-                game_num = 0
-                decided = True
-            elif two.collidepoint(event.pos):
-                game_num = 1
-                decided = True
-                #screen.blit(playbg, [0, 0])
-                #screen.blit(play, [403, 225])
-            elif three.collidepoint(event.pos):
-                game_num = 2
-                decided = True
+            if visible:
+                if one.collidepoint(event.pos):
+                    
+                    startyt = pygame.time.get_ticks()
+                    game_num = 0
+                    decided = True
+                    visible = False
+                elif two.collidepoint(event.pos):
+                    game_num = 1
+                    decided = True
+                    visible = False
+                    #screen.blit(playbg, [0, 0])
+                    #screen.blit(play, [403, 225])
+                elif three.collidepoint(event.pos):
+                    game_num = 2
+                    decided = True
+                    visible = False
+            if game_num == 1:
+            
+                if homesq.collidepoint(event.pos):
+                    screen.blit(mainscr, [0, 0, ])
+                    game_num = -1
+                    noblit = False
+                    visible = True
+            if game_num == 2:
+                if currentlevelno == 1:
+                    if paper1.collidepoint(event.pos):
+                        if not paper1 in cant_click:
+                            pygame.draw.ellipse (screen, RED, [358, 353,40, 25], 3)
+        
+                            cant_click.append(paper1)
+                            scorego +=1
+                    elif paper2.collidepoint(event.pos):
+                        if not paper2 in cant_click:
+                        
+                            pygame.draw.ellipse (screen, RED, [522, 384, 27, 25], 3)
+        
+                            cant_click.append(paper2)
+                            scorego +=1
+                    elif paper3.collidepoint(event.pos):
+                        if not paper3 in cant_click:
+                        
+                            pygame.draw.ellipse (screen, RED, [580, 314, 38, 25], 3)
+                            cant_click.append(paper3)
+                            scorego +=1
+                    else:
+                        seconds -= 5
+                        #print(seconds)
+                if currentlevelno == 2:
+                    if cup1.collidepoint(event.pos):
+                        if not cup1 in cant_click:
+                            pygame.draw.ellipse (screen, RED, [189, 313,32, 27], 3)
+
+        
+                            cant_click.append(paper1)
+                            scorego +=1
+                    elif cup2.collidepoint(event.pos):
+                        if not cup2 in cant_click:
+                            cup2 = pygame.draw.ellipse (screen, RED, [509, 400, 76, 50], 3)
+        
+                            cant_click.append(paper2)
+                            scorego +=1
+                    elif cup3.collidepoint(event.pos):
+                        if not cup3 in cant_click:
+                            cup3 = pygame.draw.ellipse (screen, RED, [483, 346, 33, 22], 3)
+                            cant_click.append(paper3)
+                            scorego +=1
+                    else:
+                        seconds -= 5
+                if currentlevelno == 3:
+                    if met1.collidepoint(event.pos):
+                        if not met1 in cant_click:
+                            pygame.draw.ellipse (screen, RED, [519, 341, 16, 13], 3)
+
+        
+                            cant_click.append(paper1)
+                            scorego +=1
+                    elif met2.collidepoint(event.pos):
+                        if not met2 in cant_click:
+                            pygame.draw.ellipse (screen, RED, [700, 354, 33, 19], 3)
+        
+                            cant_click.append(paper2)
+                            scorego +=1
+                    else:
+                        seconds -= 5
+                if homesq.collidepoint(event.pos):
+                    screen.blit(mainscr, [0, 0, ])
+                    game_num = -1
+                    noblit = False
+                    visible = True
         if event.type == pygame.KEYDOWN:
             if game_num == 1:
                 if event.key == pygame.K_LEFT:
@@ -1364,8 +1741,9 @@ while not done:
                 if event.key == pygame.K_RIGHT and soldier.change_x > 0:
                     soldier.stop()
     
-    if not decided:
+    if game_num == -1:
         screen.blit(mainscr, [0, 0, ])
+
         
 
        
@@ -1386,7 +1764,9 @@ while not done:
         #main()
     if game_num == 1:
         main2()
-        
+    if game_num == 2:
+        main3()
+    
     clock.tick(60)
 
     # Go ahead and update the screen with what we've drawn.
